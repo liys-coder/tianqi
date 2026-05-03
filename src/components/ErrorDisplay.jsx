@@ -1,6 +1,6 @@
 export default function ErrorDisplay({ message, onRetry }) {
   return (
-    <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-6">
+    <div className="flex flex-col items-center justify-center min-h-[50vh] gap-4 px-6" role="alert">
       <div className="w-16 h-16 rounded-full bg-red-100 flex items-center justify-center">
         <svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#DC2626" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
           <circle cx="12" cy="12" r="10"/>

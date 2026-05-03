@@ -5,7 +5,7 @@ export default function LoadingSkeleton() {
   };
 
   return (
-    <div className="px-6 md:px-12 lg:px-24 py-12 space-y-6 animate-fade-up">
+    <div className="px-6 md:px-12 lg:px-24 py-12 space-y-6 animate-fade-up" role="status" aria-label="加载中">
       {/* City header skeleton */}
       <div className="space-y-2">
         <div className="h-5 w-32 rounded bg-white/40 animate-shimmer" style={shimmerStyle} />

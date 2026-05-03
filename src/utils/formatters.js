@@ -13,6 +13,3 @@ export function getTodayString() {
   return `${dayName} · ${month}月${day}日`;
 }
 
-export function getTimeString() {
-  return new Date().toLocaleTimeString('zh-CN', { hour: '2-digit', minute: '2-digit' });
-}

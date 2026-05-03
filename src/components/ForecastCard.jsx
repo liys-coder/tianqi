@@ -7,7 +7,7 @@ export default function ForecastCard({ data, index }) {
 
   return (
     <div
-      className="flex-1 min-w-[100px] rounded-2xl p-4 md:p-5 flex flex-col items-center gap-3 cursor-pointer
+      className="flex-1 min-w-[100px] rounded-2xl p-4 md:p-5 flex flex-col items-center gap-3
         bg-white/45 backdrop-blur-[12px] border border-white/60
         hover:-translate-y-1 hover:shadow-lg hover:bg-white/55
         transition-all duration-200 ease-out animate-fade-up"

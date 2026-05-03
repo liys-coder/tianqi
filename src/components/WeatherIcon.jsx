@@ -14,7 +14,7 @@ export default function WeatherIcon({ code, size = 48, className = '' }) {
         background: `radial-gradient(circle at 50% 40%, ${info.color}55, ${info.color}15)`,
       }}
     >
-      <LucideIcon size={size} color={info.color} strokeWidth={1.5} />
+      <LucideIcon size={size} color={info.color} strokeWidth={1.5} aria-label={`${info.description}天气`} />
     </div>
   );
 }
