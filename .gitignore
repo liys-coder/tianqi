@@ -6,5 +6,8 @@ dist-ssr
 .env.*
 !.env.example
 *.log
+.superpowers/
+dev_out.txt
+dev_err.txt
 .DS_Store
 Thumbs.db
