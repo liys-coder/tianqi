@@ -1,11 +1,15 @@
-import React from 'react';
+import { WeatherProvider } from './components/WeatherProvider';
+import WeatherPage from './components/WeatherPage';
 
-function App() {
+export default function App() {
   return (
-    <div className="min-h-screen bg-gradient-to-br from-sky-400 to-blue-600 flex items-center justify-center">
-      <h1 className="text-4xl font-bold text-white">成都天气</h1>
+    <div className="min-h-screen"
+      style={{
+        background: 'linear-gradient(180deg, #ECFEFF 0%, #A5F3FC 50%, #67E8F9 100%)',
+      }}>
+      <WeatherProvider>
+        <WeatherPage />
+      </WeatherProvider>
     </div>
   );
 }
-
-export default App;
