@@ -4,6 +4,40 @@
 
 * { box-sizing: border-box; }
 
+/* 背景渐变光晕动画 */
+@keyframes gradientShift {
+  0%, 100% { background-position: 0% 50%; }
+  50% { background-position: 100% 50%; }
+}
+
+.gradient-bg {
+  background: linear-gradient(180deg, #F0F9FF 0%, #E0F2FE 50%, #BAE6FD 100%);
+  background-size: 200% 200%;
+  animation: gradientShift 20s ease infinite;
+}
+
+/* 毛玻璃增强 */
+.glass-card {
+  background: rgba(255, 255, 255, 0.65);
+  backdrop-filter: blur(20px);
+  -webkit-backdrop-filter: blur(20px);
+  border: 1px solid rgba(255, 255, 255, 0.4);
+  box-shadow: 
+    0 8px 30px rgba(8, 145, 178, 0.15),
+    inset 0 1px 1px rgba(255, 255, 255, 0.5);
+}
+
+/* 预报卡片毛玻璃 */
+.glass-card-sm {
+  background: rgba(255, 255, 255, 0.55);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid rgba(255, 255, 255, 0.35);
+  box-shadow: 
+    0 4px 20px rgba(8, 145, 178, 0.1),
+    inset 0 1px 1px rgba(255, 255, 255, 0.4);
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: 0.01ms !important;

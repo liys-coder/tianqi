@@ -1,25 +1,24 @@
 import WeatherIcon from './WeatherIcon';
 import { getWeatherInfo } from '../utils/weatherMapping';
-import { getDayName } from '../utils/formatters';
+import { formatDay } from '../utils/formatters';
 
 export default function ForecastCard({ data, index }) {
   const info = getWeatherInfo(data.weatherCode);
+  const dayLabel = formatDay(data.date);
 
   return (
-    <div
-      className="flex-1 min-w-[100px] rounded-2xl p-4 md:p-5 flex flex-col items-center gap-3
-        bg-white/45 backdrop-blur-[12px] border border-white/60
-        hover:-translate-y-1 hover:shadow-lg hover:bg-white/55
-        transition-all duration-200 ease-out animate-fade-up"
-      style={{ animationDelay: `${index * 0.06}s`, animationFillMode: 'backwards' }}
+    <div 
+      className="glass-card-sm rounded-xl sm:rounded-2xl p-3 sm:p-4 flex-1 min-w-[100px] sm:min-w-[120px] text-center transition-all duration-200 hover:scale-[1.02] hover:shadow-lg cursor-pointer"
+      style={{ animationDelay: `${index * 80}ms` }}
     >
-      <span className="text-xs font-semibold text-[#0E7490]">{getDayName(data.date)}</span>
-      <WeatherIcon code={data.weatherCode} size={28} />
-      <div className="flex gap-2 items-baseline">
-        <span className="text-base font-semibold text-[#164E63]">{data.tempMax}°</span>
-        <span className="text-xs text-[#94A3B8]">{data.tempMin}°</span>
+      <p className="text-xs sm:text-sm text-[#64748B] font-medium mb-2">{dayLabel}</p>
+      <div className="flex justify-center mb-2">
+        <WeatherIcon code={data.weatherCode} size={28} />
       </div>
-      <span className="text-[0.65rem] text-[#94A3B8] -mt-1">{info.description}</span>
+      <div className="flex justify-center gap-2 text-sm">
+        <span className="text-[#0C4A6E] font-semibold">{data.tempMax}°</span>
+        <span className="text-[#94A3B8]">{data.tempMin}°</span>
+      </div>
     </div>
   );
 }

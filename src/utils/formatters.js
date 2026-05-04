@@ -5,6 +5,10 @@ export function getDayName(dateString) {
   return DAY_NAMES[date.getDay()];
 }
 
+export function formatDay(dateString) {
+  return getDayName(dateString);
+}
+
 export function getTodayString() {
   const now = new Date();
   const dayName = DAY_NAMES[now.getDay()];
