@@ -3,6 +3,7 @@ import { MapPin } from 'lucide-react';
 const CITIES = [
   { id: 'chengdu', name: '成都', lat: 30.67, lon: 104.07 },
   { id: 'chongqing', name: '重庆', lat: 29.57, lon: 106.55 },
+  { id: 'guiyang', name: '贵阳', lat: 26.58, lon: 106.72 },
 ];
 
 export default function CitySelector({ currentCity, onCityChange }) {

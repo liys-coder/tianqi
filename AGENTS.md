@@ -30,12 +30,13 @@ npm run preview  # 预览生产构建
 | `src/components/WeatherPage.jsx` | 主页面布局 |
 | `src/utils/weatherMapping.js` | WMO 天气代码 → Lucide 图标 + 中文描述 |
 | `tailwind.config.js` | Tailwind 配置（含自定义动画） |
-| `docs/superpowers/specs/2026-05-04-chengdu-weather-design.md` | 设计规格 |
+| `docs/superpowers/specs/2026-05-04-chengdu-weather-design.md` | 设计规格（旧版） |
+| `docs/superpowers/specs/2026-05-04-chengdu-weather-v3-visual-upgrade.md` | 视觉升级规格（当前） |
 
 ## API
 
 - **接口：** `https://api.open-meteo.com/v1/forecast`
-- **位置：** 成都（lat=30.67, lon=104.07）
+- **位置：** 成都（lat=30.67, lon=104.07）、重庆（lat=29.57, lon=106.55）、贵阳（lat=26.58, lon=106.72）
 - **时区：** Asia/Shanghai
 
 ## 注意事项
@@ -46,8 +47,4 @@ npm run preview  # 预览生产构建
 - Tailwind 自定义动画：`shimmer`（加载）、`fade-up`（入场）
 - 玻璃拟态设计：`backdrop-blur` + 半透明白色背景
 - API 无需认证，环境变量未使用
-
-## 文档
-
-- 设计规格：`docs/superpowers/specs/2026-05-04-chengdu-weather-design.md`
-- 开发计划：`docs/superpowers/plans/2026-05-04-chengdu-weather-plan.md`
+- 设计系统：`design-system/chengdu-weather/MASTER.md`
