@@ -1,12 +1,19 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { fetchAllCitiesWeather, CITIES as CITIES_LIST, buildApiUrl } from '../hooks/useWeather';
-import { getWeatherBackgroundUrl, getWeatherLabel, getFallbackBackgroundUrl } from '../utils/weatherBackground';
+import { getWeatherBackgroundUrl, getWeatherLabel, getFallbackBackgroundUrl, getNextCityId, preloadImage, getWeatherBackgroundUrlByCity } from '../utils/weatherBackground';
 
 const WeatherContext = createContext(null);
 
 const CITIES = CITIES_LIST;
 
-const DEFAULT_CITY = CITIES[0];
+// 从 URL 参数读取当前城市，未指定时默认为第一个城市
+function getInitialCity() {
+  const params = new URLSearchParams(window.location.search);
+  const cityId = params.get('city');
+  return CITIES.find(c => c.id === cityId) || CITIES[0];
+}
+
+const DEFAULT_CITY = getInitialCity();
 
 function processData(data) {
   return {
@@ -36,8 +43,11 @@ export function WeatherProvider({ children }) {
   const [currentCity, setCurrentCity] = useState(DEFAULT_CITY);
   const [backgroundImage, setBackgroundImage] = useState('');
   const [backgroundLabel, setBackgroundLabel] = useState('');
+  const [nextImage, setNextImage] = useState('');        // 下一张缓存图片
+  const [imageStatus, setImageStatus] = useState('idle'); // 'idle' | 'loading-small' | 'loading-large' | 'done'
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const cacheRef = useRef({}); // 使用 ref 存储缓存，避免重渲染
+  const bufferRef = useRef({ current: null, next: null }); // 图片缓冲
 
   // 启动时预加载所有城市数据
   useEffect(() => {
@@ -182,46 +192,67 @@ export function WeatherProvider({ children }) {
     setLoading(false);
   }, [currentCity]);
 
-  // 天气背景预加载 - 优化：同时发起多个分辨率请求，带错误处理
+  // 天气背景双图缓冲 - 渐进加载
   useEffect(() => {
     if (!rawData) return;
-    let active = true;
-    const weatherCode = rawData.current.weather_code;
-    const bgUrl = getWeatherBackgroundUrl(weatherCode);
-    const bgLabel = getWeatherLabel(weatherCode);
-    const fallbackUrl = getFallbackBackgroundUrl();
-
-    // 预加载小图先显示，再加载大图
-    const smallUrl = bgUrl.replace('1920/1080', '640/360');
     
-    // 先加载小图快速显示
-    const smallImg = new Image();
-    smallImg.src = smallUrl;
-    smallImg.onload = () => {
-      if (active) setBackgroundImage(smallUrl);
-      if (active) setBackgroundLabel(bgLabel);
-    };
-    smallImg.onerror = () => {
-      // 小图加载失败，使用 fallback
-      if (active) setBackgroundImage(fallbackUrl);
-      if (active) setBackgroundLabel(bgLabel);
-    };
-
-    // 再加载大图替换
-    const largeImg = new Image();
-    largeImg.src = bgUrl;
-    largeImg.onload = () => {
-      if (active) setBackgroundImage(bgUrl);
-    };
-    largeImg.onerror = () => {
-      // 大图加载失败，保持小图/fallback
-    };
-
+    let active = true;
+    const currentCityId = currentCity.id;
+    const nextCity = getNextCityId(currentCityId);
+    const bgLabel = getWeatherLabel(rawData.current.weather_code);
+    const fallbackUrl = getFallbackBackgroundUrl();
+    
+    // 当前城市图片 URL
+    const currentBgUrl = getWeatherBackgroundUrlByCity(currentCityId);
+    const nextBgUrl = getWeatherBackgroundUrlByCity(nextCity.id);
+    
+    // 小图 URL（快速显示）
+    const smallUrl = currentBgUrl.replace('1920/1080', '640/360');
+    
+    async function loadImages() {
+      try {
+        // Step 1: 先加载小图快速显示
+        setImageStatus('loading-small');
+        const loadedSmall = await preloadImage(smallUrl);
+        if (!active) return;
+        
+        setNextImage(loadedSmall);
+        setBackgroundLabel(bgLabel);
+        setImageStatus('loading-large');
+        
+        // Step 2: 小图加载完成后再加载大图
+        const largeImg = new Image();
+        largeImg.src = currentBgUrl;
+        await new Promise((resolve, reject) => {
+          largeImg.onload = resolve;
+          largeImg.onerror = reject;
+        });
+        if (!active) return;
+        
+        setBackgroundImage(currentBgUrl);
+        bufferRef.current.current = currentBgUrl;
+        setImageStatus('done');
+        
+        // Step 3: 后台预加载下一城市大图
+        const nextImg = new Image();
+        nextImg.src = nextBgUrl;
+        bufferRef.current.next = nextBgUrl;
+        
+      } catch (e) {
+        console.warn('图片加载失败，使用 fallback:', e);
+        if (!active) return;
+        setBackgroundImage(fallbackUrl);
+        setBackgroundLabel(bgLabel);
+      }
+    }
+    
+    loadImages();
+    
     return () => { active = false; };
-  }, [rawData]);
+  }, [rawData, currentCity]);
 
   return (
-    <WeatherContext.Provider value={{ data, loading, error, refresh, backgroundImage, backgroundLabel, currentCity, setCurrentCity }}>
+    <WeatherContext.Provider value={{ data, loading, error, refresh, backgroundImage, backgroundLabel, nextImage, imageStatus, currentCity, setCurrentCity }}>
       {children}
     </WeatherContext.Provider>
   );

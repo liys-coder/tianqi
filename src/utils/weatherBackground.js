@@ -1,5 +1,7 @@
 // src/utils/weatherBackground.js
 
+import { CITIES } from '../hooks/useWeather';
+
 /**
  * WMO 天气代码到 Unsplash 背景关键词的映射
  */
@@ -73,4 +75,41 @@ export function getFallbackBackgroundUrl() {
 export function getWeatherLabel(weatherCode) {
   const weather = weatherBackgroundMap[weatherCode] || weatherBackgroundMap[0];
   return weather.label;
+}
+
+/**
+ * 获取循环下一个城市
+ * @param {string} currentId - 当前城市 ID
+ * @returns {Object} 下一个城市对象
+ */
+export function getNextCityId(currentId) {
+  const idx = CITIES.findIndex(c => c.id === currentId);
+  const nextIdx = (idx + 1) % CITIES.length;
+  return CITIES[nextIdx];
+}
+
+/**
+ * 预加载图片并返回 Promise
+ * @param {string} url - 图片 URL
+ * @returns {Promise<string>} 加载完成后的 URL
+ */
+export function preloadImage(url) {
+  return new Promise((resolve, reject) => {
+    const img = new Image();
+    img.src = url;
+    img.onload = () => resolve(url);
+    img.onerror = () => reject(new Error(`Failed to load ${url}`));
+  });
+}
+
+/**
+ * 根据城市 ID 获取背景图 URL
+ * @param {string} cityId - 城市 ID
+ * @returns {string} 图片 URL
+ */
+export function getWeatherBackgroundUrlByCity(cityId) {
+  const city = CITIES.find(c => c.id === cityId) || CITIES[0];
+  // 使用城市 ID + 年份生成固定 seed
+  const seed = cityId + '-' + new Date().getFullYear();
+  return `https://picsum.photos/seed/${seed}/1920/1080?blur=2`;
 }
