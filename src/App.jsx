@@ -1,9 +1,24 @@
 // xm3 - 成都天气应用 V3
+import { lazy, Suspense } from 'react';
 import { WeatherProvider, useWeatherContext } from './components/WeatherProvider';
-import WeatherPage from './components/WeatherPage';
+
+// 懒加载页面组件
+const WeatherPage = lazy(() => import('./components/WeatherPage'));
+
+// 加载骨架屏
+function LoadingFallback() {
+  return (
+    <div className="min-h-screen flex items-center justify-center">
+      <div className="animate-pulse flex flex-col items-center gap-4">
+        <div className="w-16 h-16 bg-cyan-200 rounded-full"></div>
+        <div className="w-32 h-4 bg-cyan-100 rounded"></div>
+      </div>
+    </div>
+  );
+}
 
 function AppContent() {
-  const { backgroundImage, backgroundLabel } = useWeatherContext();
+  const { backgroundImage } = useWeatherContext();
 
   return (
     <div
@@ -16,7 +31,9 @@ function AppContent() {
         backgroundPosition: 'center',
       }}
     >
-      <WeatherPage />
+      <Suspense fallback={<LoadingFallback />}>
+        <WeatherPage />
+      </Suspense>
     </div>
   );
 }

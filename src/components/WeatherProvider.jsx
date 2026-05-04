@@ -37,18 +37,29 @@ export function WeatherProvider({ children }) {
   const { rawData, loading, error, refresh } = useWeather(currentCity);
   const data = rawData ? processData(rawData) : null;
 
-  // 天气背景预加载
+  // 天气背景预加载 - 优化：同时发起多个分辨率请求
   useEffect(() => {
     if (!rawData) return;
     const weatherCode = rawData.current.weather_code;
     const bgUrl = getWeatherBackgroundUrl(weatherCode);
     const bgLabel = getWeatherLabel(weatherCode);
 
-    const img = new Image();
-    img.src = bgUrl;
-    img.onload = () => {
-      setBackgroundImage(bgUrl);
+    // 预加载小图先显示，再加载大图
+    const smallUrl = bgUrl.replace('1920/1080', '640/360');
+    
+    // 先加载小图快速显示
+    const smallImg = new Image();
+    smallImg.src = smallUrl;
+    smallImg.onload = () => {
+      setBackgroundImage(smallUrl); // 先显示小图
       setBackgroundLabel(bgLabel);
+    };
+
+    // 再加载大图替换
+    const largeImg = new Image();
+    largeImg.src = bgUrl;
+    largeImg.onload = () => {
+      setBackgroundImage(bgUrl); // 替换为大图
     };
   }, [rawData]);
 
