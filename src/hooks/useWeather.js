@@ -11,9 +11,11 @@ export function buildApiUrl(city = DEFAULT_CITY) {
     latitude: city.lat,
     longitude: city.lon,
     current: 'temperature_2m,relative_humidity_2m,apparent_temperature,weather_code,wind_speed_10m',
+    hourly: 'temperature_2m,weather_code,precipitation_probability,wind_speed_10m',
     daily: 'weather_code,temperature_2m_max,temperature_2m_min,uv_index_max,sunrise,sunset,visibility_mean,cloud_cover_mean,surface_pressure_mean',
     timezone: 'Asia/Shanghai',
     forecast_days: '5', // 只请求 5 天预报，减少响应体积
+    forecast_hours: '24',
   });
   return `https://api.open-meteo.com/v1/forecast?${params.toString()}`;
 }

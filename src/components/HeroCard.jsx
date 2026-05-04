@@ -1,12 +1,14 @@
 import WeatherIcon from './WeatherIcon';
 import MetricsBar from './MetricsBar';
 import { getWeatherInfo } from '../utils/weatherMapping';
+import { ScrollReveal } from '../hooks/useScrollReveal';
 
 export default function HeroCard({ current }) {
   const info = getWeatherInfo(current.weatherCode);
 
   return (
-    <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 animate-fade-in-scale shadow-lg pulse-breathing">
+    <ScrollReveal delay={0}>
+      <div className="glass-card rounded-2xl sm:rounded-3xl p-4 sm:p-6 md:p-8 mb-4 sm:mb-6 animate-fade-in-scale shadow-lg pulse-breathing">
       <div className="flex items-center gap-3 sm:gap-5 md:gap-6 flex-wrap">
         <WeatherIcon code={current.weatherCode} size={48} />
         <div className="flex-1 min-w-[120px] sm:min-w-[140px]">
@@ -23,5 +25,6 @@ export default function HeroCard({ current }) {
         windSpeed={current.windSpeed}
       />
     </div>
+    </ScrollReveal>
   );
 }

@@ -103,13 +103,19 @@ export function preloadImage(url) {
 }
 
 /**
- * 根据城市 ID 获取背景图 URL
+ * 根据城市 ID + 天气代码 + 日期获取背景图 URL
+ * 策略：城市(3) * 天气(约30种) * 日期(每天变) = 每天不同的新鲜感
+ * 但同一天内复用，利于浏览器缓存
+ *
  * @param {string} cityId - 城市 ID
+ * @param {number} weatherCode - WMO 天气代码
  * @returns {string} 图片 URL
  */
-export function getWeatherBackgroundUrlByCity(cityId) {
+export function getWeatherBackgroundUrlByCity(cityId, weatherCode = 0) {
   const city = CITIES.find(c => c.id === cityId) || CITIES[0];
-  // 使用城市 ID + 年份生成固定 seed
-  const seed = cityId + '-' + new Date().getFullYear();
+  // 获取"天"级别的日期数（每天0点变化）
+  const dayNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
+  // 组合 seed：城市 + 天气 + 日期
+  const seed = `${cityId}-w${weatherCode}-d${dayNumber}`;
   return `https://picsum.photos/seed/${seed}/1920/1080?blur=2`;
 }

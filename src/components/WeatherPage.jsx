@@ -4,6 +4,7 @@ import ErrorDisplay from './ErrorDisplay';
 import CityHeader from './CityHeader';
 import CitySelector from './CitySelector';
 import HeroCard from './HeroCard';
+import HourlyStrip from './HourlyStrip';
 import ForecastStrip from './ForecastStrip';
 import DetailsGrid from './DetailsGrid';
 
@@ -29,6 +30,7 @@ export default function WeatherPage() {
       <CitySelector currentCity={currentCity} onCityChange={handleCityChange} />
       <CityHeader />
       <HeroCard current={data.current} />
+      <HourlyStrip hourly={data.hourly} />
       <ForecastStrip daily={data.daily} />
       <DetailsGrid daily={data.daily} />
     </div>

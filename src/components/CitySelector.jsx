@@ -1,8 +1,10 @@
 import { MapPin } from 'lucide-react';
 import { CITIES } from '../hooks/useWeather';
+import { ScrollReveal } from '../hooks/useScrollReveal';
 
 export default function CitySelector({ currentCity, onCityChange }) {
   return (
+    <ScrollReveal delay={0}>
     <div className="flex items-center gap-2 mb-4 sm:mb-6">
       <MapPin className="w-4 h-4 sm:w-5 sm:h-5 text-[#0891B2]" />
       <div className="flex gap-1 sm:gap-2">
@@ -21,5 +23,6 @@ export default function CitySelector({ currentCity, onCityChange }) {
         ))}
       </div>
     </div>
+    </ScrollReveal>
   );
 }

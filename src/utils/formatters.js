@@ -30,3 +30,8 @@ export function getTodayString() {
   return `${dayName} · ${month}月${day}日`;
 }
 
+export function formatHour(timeString) {
+  const date = new Date(timeString);
+  return `${String(date.getHours()).padStart(2, '0')}:00`;
+}
+

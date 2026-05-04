@@ -58,6 +58,12 @@ function processData(data) {
       windSpeed: Math.round(data.current.wind_speed_10m),
       weatherCode: data.current.weather_code,
     },
+    hourly: (data.hourly?.time || []).slice(0, 24).map((time, i) => ({
+      time,
+      temp: Math.round(data.hourly?.temperature_2m?.[i] ?? 0),
+      weatherCode: data.hourly?.weather_code?.[i] ?? 0,
+      precipitationProbability: data.hourly?.precipitation_probability?.[i] ?? null,
+    })),
     daily: data.daily.time.map((date, i) => ({
       date,
       weatherCode: data.daily.weather_code[i],
@@ -202,9 +208,11 @@ export function WeatherProvider({ children }) {
     const bgLabel = getWeatherLabel(rawData.current.weather_code);
     const fallbackUrl = getFallbackBackgroundUrl();
 
+    const currentWeatherCode = rawData.current.weather_code;
     // 当前城市图片 URL
-    const currentBgUrl = getWeatherBackgroundUrlByCity(currentCityId);
-    const nextBgUrl = getWeatherBackgroundUrlByCity(nextCity.id);
+    const currentBgUrl = getWeatherBackgroundUrlByCity(currentCityId, currentWeatherCode);
+    const nextCityWeatherCode = cacheRef.current[nextCity.id]?.current?.weather_code ?? currentWeatherCode;
+    const nextBgUrl = getWeatherBackgroundUrlByCity(nextCity.id, nextCityWeatherCode);
 
     // 小图 URL（快速显示）
     const smallUrl = currentBgUrl.replace('1920/1080', '640/360');

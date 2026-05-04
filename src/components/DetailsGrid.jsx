@@ -1,4 +1,5 @@
 import { Sun, Sunset, Eye, Cloud, Gauge, SunMedium } from 'lucide-react';
+import { ScrollReveal } from '../hooks/useScrollReveal';
 
 const DetailItem = ({ icon: Icon, label, value, unit }) => (
   <div className="glass-card-sm rounded-xl p-3 sm:p-4 flex items-center gap-3 sm:gap-4 transition-all duration-300 hover:-translate-y-1 hover:shadow-lg">
@@ -27,7 +28,7 @@ export default function DetailsGrid({ daily }) {
   ];
 
   return (
-    <div className="mt-6 sm:mt-8">
+    <ScrollReveal delay={200} className="mt-6 sm:mt-8">
       <h2 className="text-lg sm:text-xl font-semibold text-[#0F172A] mb-3 sm:mb-4">
         详细数据
       </h2>
@@ -42,6 +43,6 @@ export default function DetailsGrid({ daily }) {
           </div>
         ))}
       </div>
-    </div>
+    </ScrollReveal>
   );
 }
