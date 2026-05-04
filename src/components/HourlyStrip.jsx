@@ -39,9 +39,13 @@ export default function HourlyStrip({ hourly }) {
  * HourlyCard — 单个小时卡片
  */
 function HourlyCard({ data }) {
+  // 空安全保护：API 数据可能异常
+  if (!data?.time) return null;
+
   // 从 API 时间字符串中直接提取日期和小时（API 返回 Asia/Shanghai 时区）
-  const cardDate = data.time.split('T')[0];
-  const cardHour = data.time.split('T')[1].split(':')[0];
+  const timeParts = data.time.split('T');
+  const cardDate = timeParts[0] || '';
+  const cardHour = timeParts[1]?.split(':')[0] || '';
 
   // 获取 Asia/Shanghai 当前日期和小时，避免本地时区偏移
   const now = new Date();

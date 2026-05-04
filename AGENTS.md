@@ -36,7 +36,7 @@ npm run preview  # 预览生产构建
 ## API
 
 - **接口：** `https://api.open-meteo.com/v1/forecast`
-- **位置：** 成都（lat=30.67, lon=104.07）、重庆（lat=29.57, lon=106.55）、贵阳（lat=26.58, lon=106.72）
+- **位置：** 成都（lat=30.67, lon=104.07）、重庆（lat=29.57, lon=106.55）、贵阳（lat=26.58, lon=106.72）、南充（lat=30.84, lon=106.11）
 - **时区：** Asia/Shanghai
 
 ## 注意事项

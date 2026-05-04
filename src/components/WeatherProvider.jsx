@@ -7,15 +7,6 @@ const WeatherContext = createContext(null);
 const CITIES = CITIES_LIST;
 const CACHE_DURATION = 5 * 60 * 1000; // 5 分钟缓存
 
-// 从 URL 参数读取当前城市，未指定时默认为第一个城市
-function getInitialCity() {
-  const params = new URLSearchParams(window.location.search);
-  const cityId = params.get('city');
-  return CITIES.find(c => c.id === cityId) || CITIES[0];
-}
-
-const DEFAULT_CITY = getInitialCity();
-
 // 本地缓存 key
 function getCacheKey(cityId) {
   return `weather_${cityId}`;
@@ -64,7 +55,7 @@ function processData(data) {
       weatherCode: data.hourly?.weather_code?.[i] ?? 0,
       precipitationProbability: data.hourly?.precipitation_probability?.[i] ?? null,
     })),
-    daily: data.daily.time.map((date, i) => ({
+    daily: (data.daily?.time || []).map((date, i) => ({
       date,
       weatherCode: data.daily.weather_code[i],
       tempMax: Math.round(data.daily.temperature_2m_max[i]),
@@ -80,7 +71,12 @@ function processData(data) {
 }
 
 export function WeatherProvider({ children }) {
-  const [currentCity, setCurrentCity] = useState(DEFAULT_CITY);
+  const [currentCity, setCurrentCity] = useState(() => {
+    // 使用 useState 初始化函数，避免模块级执行 window.location
+    const params = new URLSearchParams(window.location.search);
+    const cityId = params.get('city');
+    return CITIES.find(c => c.id === cityId) || CITIES[0];
+  });
   const [backgroundImage, setBackgroundImage] = useState('');
   const [backgroundLabel, setBackgroundLabel] = useState('');
   const [rawData, setRawData] = useState(null);

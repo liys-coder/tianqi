@@ -104,8 +104,8 @@ export function preloadImage(url) {
 
 /**
  * 根据城市 ID + 天气代码 + 日期获取背景图 URL
- * 策略：城市(3) * 天气(约30种) * 日期(每天变) = 每天不同的新鲜感
- * 但同一天内复用，利于浏览器缓存
+ * 策略：城市(4) * 天气(约30种) * 日期(每周变) = 每周不同的新鲜感
+ * 同周内复用，利于浏览器缓存
  *
  * @param {string} cityId - 城市 ID
  * @param {number} weatherCode - WMO 天气代码
@@ -113,9 +113,9 @@ export function preloadImage(url) {
  */
 export function getWeatherBackgroundUrlByCity(cityId, weatherCode = 0) {
   const city = CITIES.find(c => c.id === cityId) || CITIES[0];
-  // 获取"天"级别的日期数（每天0点变化）
-  const dayNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24));
-  // 组合 seed：城市 + 天气 + 日期
-  const seed = `${cityId}-w${weatherCode}-d${dayNumber}`;
+  // 获取"周"级别的日期数（每周0点变化），延长缓存时间
+  const weekNumber = Math.floor(Date.now() / (1000 * 60 * 60 * 24 * 7));
+  // 组合 seed：城市 + 天气 + 周
+  const seed = `${cityId}-w${weatherCode}-w${weekNumber}`;
   return `https://picsum.photos/seed/${seed}/1920/1080?blur=2`;
 }
