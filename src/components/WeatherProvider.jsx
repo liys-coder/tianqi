@@ -1,5 +1,6 @@
-import { createContext, useContext, useState } from 'react';
+import { createContext, useContext, useState, useEffect } from 'react';
 import { useWeather } from '../hooks/useWeather';
+import { getWeatherBackgroundUrl, getWeatherLabel } from '../utils/weatherBackground';
 
 const WeatherContext = createContext(null);
 
@@ -31,11 +32,28 @@ function processData(data) {
 
 export function WeatherProvider({ children }) {
   const [currentCity, setCurrentCity] = useState(DEFAULT_CITY);
+  const [backgroundImage, setBackgroundImage] = useState('');
+  const [backgroundLabel, setBackgroundLabel] = useState('');
   const { rawData, loading, error, refresh } = useWeather(currentCity);
   const data = rawData ? processData(rawData) : null;
 
+  // 天气背景预加载
+  useEffect(() => {
+    if (!rawData) return;
+    const weatherCode = rawData.current.weather_code;
+    const bgUrl = getWeatherBackgroundUrl(weatherCode);
+    const bgLabel = getWeatherLabel(weatherCode);
+
+    const img = new Image();
+    img.src = bgUrl;
+    img.onload = () => {
+      setBackgroundImage(bgUrl);
+      setBackgroundLabel(bgLabel);
+    };
+  }, [rawData]);
+
   return (
-    <WeatherContext.Provider value={{ data, loading, error, refresh, currentCity, setCurrentCity }}>
+    <WeatherContext.Provider value={{ data, loading, error, refresh, backgroundImage, backgroundLabel, currentCity, setCurrentCity }}>
       {children}
     </WeatherContext.Provider>
   );
