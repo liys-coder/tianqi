@@ -1,5 +1,5 @@
 import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
-import { useWeather, fetchAllCitiesWeather, CITIES as CITIES_LIST, buildApiUrl } from '../hooks/useWeather';
+import { fetchAllCitiesWeather, CITIES as CITIES_LIST, buildApiUrl } from '../hooks/useWeather';
 import { getWeatherBackgroundUrl, getWeatherLabel, getFallbackBackgroundUrl } from '../utils/weatherBackground';
 
 const WeatherContext = createContext(null);
@@ -185,6 +185,7 @@ export function WeatherProvider({ children }) {
   // 天气背景预加载 - 优化：同时发起多个分辨率请求，带错误处理
   useEffect(() => {
     if (!rawData) return;
+    let active = true;
     const weatherCode = rawData.current.weather_code;
     const bgUrl = getWeatherBackgroundUrl(weatherCode);
     const bgLabel = getWeatherLabel(weatherCode);
@@ -197,24 +198,26 @@ export function WeatherProvider({ children }) {
     const smallImg = new Image();
     smallImg.src = smallUrl;
     smallImg.onload = () => {
-      setBackgroundImage(smallUrl);
-      setBackgroundLabel(bgLabel);
+      if (active) setBackgroundImage(smallUrl);
+      if (active) setBackgroundLabel(bgLabel);
     };
     smallImg.onerror = () => {
       // 小图加载失败，使用 fallback
-      setBackgroundImage(fallbackUrl);
-      setBackgroundLabel(bgLabel);
+      if (active) setBackgroundImage(fallbackUrl);
+      if (active) setBackgroundLabel(bgLabel);
     };
 
     // 再加载大图替换
     const largeImg = new Image();
     largeImg.src = bgUrl;
     largeImg.onload = () => {
-      setBackgroundImage(bgUrl);
+      if (active) setBackgroundImage(bgUrl);
     };
     largeImg.onerror = () => {
       // 大图加载失败，保持小图/fallback
     };
+
+    return () => { active = false; };
   }, [rawData]);
 
   return (

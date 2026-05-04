@@ -6,7 +6,13 @@ export function getDayName(dateString) {
 }
 
 export function formatDay(dateString) {
-  return getDayName(dateString);
+  const date = new Date(dateString);
+  const today = new Date();
+  const tomorrow = new Date(today);
+  tomorrow.setDate(tomorrow.getDate() + 1);
+  if (date.toDateString() === today.toDateString()) return '今天';
+  if (date.toDateString() === tomorrow.toDateString()) return '明天';
+  return DAY_NAMES[date.getDay()];
 }
 
 export function formatDate(date) {

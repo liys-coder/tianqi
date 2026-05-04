@@ -18,12 +18,12 @@ export default function DetailsGrid({ daily }) {
   const today = daily[0] || {};
 
   const details = [
-    { icon: SunMedium, label: '紫外线指数', value: today.uvIndex || '--', unit: '' },
-    { icon: Eye, label: '能见度', value: today.visibility || '--', unit: ' km' },
-    { icon: Gauge, label: '气压', value: today.pressure || '--', unit: ' hPa' },
-    { icon: Sun, label: '日出', value: today.sunrise || '--:--', unit: '' },
-    { icon: Sunset, label: '日落', value: today.sunset || '--:--', unit: '' },
-    { icon: Cloud, label: '云量', value: today.cloudCover || '--', unit: '%' },
+    { icon: SunMedium, label: '紫外线指数', value: today.uvIndex ?? '--', unit: '' },
+    { icon: Eye, label: '能见度', value: today.visibility ?? '--', unit: ' km' },
+    { icon: Gauge, label: '气压', value: today.pressure ?? '--', unit: ' hPa' },
+    { icon: Sun, label: '日出', value: today.sunrise ?? '--:--', unit: '' },
+    { icon: Sunset, label: '日落', value: today.sunset ?? '--:--', unit: '' },
+    { icon: Cloud, label: '云量', value: today.cloudCover ?? '--', unit: '%' },
   ];
 
   return (
