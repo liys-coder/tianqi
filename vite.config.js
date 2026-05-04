@@ -12,8 +12,6 @@ export default defineConfig({
           'react-vendor': ['react', 'react-dom'],
           // 分割 Lucide 图标
           'lucide': ['lucide-react'],
-          // 分割 Tailwind
-          'tailwind': ['tailwindcss', 'autoprefixer', 'postcss'],
         },
       },
     },
@@ -21,7 +19,8 @@ export default defineConfig({
     minify: 'terser',
     terserOptions: {
       compress: {
-        drop_console: true,
+        // 只删除 console.log，保留 warn 和 error
+        pure_funcs: ['console.log'],
         drop_debugger: true,
       },
     },

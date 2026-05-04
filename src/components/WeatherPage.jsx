@@ -10,11 +10,14 @@ import DetailsGrid from './DetailsGrid';
 export default function WeatherPage() {
   const { data, loading, error, refresh, currentCity, setCurrentCity } = useWeatherContext();
 
-  // 城市切换时刷新页面，通过 URL 参数传递城市
+  // 城市切换 - 使用 SPA 方式更新 Context，无整页刷新
   const handleCityChange = (city) => {
+    setCurrentCity(city);
+    // 可选：更新 URL 参数但不刷新页面
     const url = new URL(window.location.href);
-    url.searchParams.set('city', city.id);
-    window.location.href = url.toString();
+    if (url.searchParams.get('city') !== city.id) {
+      window.history.replaceState({}, '', `?city=${city.id}`);
+    }
   };
 
   if (loading) return <LoadingSkeleton />;
