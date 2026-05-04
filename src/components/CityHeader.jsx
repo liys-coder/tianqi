@@ -1,12 +1,17 @@
-import { getTodayString } from '../utils/formatters';
+import { formatDate } from '../utils/formatters';
 
 export default function CityHeader() {
+  const now = new Date();
+  const dateStr = formatDate(now);
+
   return (
-    <div className="mb-8">
-      <h1 className="text-xs md:text-sm font-medium tracking-[0.2em] uppercase text-[#0E7490] mb-1">
-        成都 · Chengdu
+    <div className="mb-4 sm:mb-6">
+      <h1 className="text-2xl sm:text-3xl md:text-4xl font-semibold text-[#0C4A6E]">
+        天气预报
       </h1>
-      <p className="text-sm text-[#155E75]/70">{getTodayString()}</p>
+      <p className="text-sm sm:text-base text-[#64748B] mt-1">
+        {dateStr}
+      </p>
     </div>
   );
 }

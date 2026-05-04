@@ -9,6 +9,13 @@ export function formatDay(dateString) {
   return getDayName(dateString);
 }
 
+export function formatDate(date) {
+  const dayName = DAY_NAMES[date.getDay()];
+  const month = date.getMonth() + 1;
+  const day = date.getDate();
+  return `${dayName} · ${month}月${day}日`;
+}
+
 export function getTodayString() {
   const now = new Date();
   const dayName = DAY_NAMES[now.getDay()];
