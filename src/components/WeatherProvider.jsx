@@ -1,6 +1,6 @@
-import { createContext, useContext, useState, useEffect, useCallback, useMemo, useRef } from 'react';
+import { createContext, useContext, useState, useEffect, useCallback, useRef } from 'react';
 import { useWeather, fetchAllCitiesWeather, CITIES as CITIES_LIST, buildApiUrl } from '../hooks/useWeather';
-import { getWeatherBackgroundUrl, getWeatherLabel } from '../utils/weatherBackground';
+import { getWeatherBackgroundUrl, getWeatherLabel, getFallbackBackgroundUrl } from '../utils/weatherBackground';
 
 const WeatherContext = createContext(null);
 
@@ -36,7 +36,6 @@ export function WeatherProvider({ children }) {
   const [currentCity, setCurrentCity] = useState(DEFAULT_CITY);
   const [backgroundImage, setBackgroundImage] = useState('');
   const [backgroundLabel, setBackgroundLabel] = useState('');
-  const [allCitiesData, setAllCitiesData] = useState({}); // 所有城市缓存
   const [isInitialLoading, setIsInitialLoading] = useState(true);
   const cacheRef = useRef({}); // 使用 ref 存储缓存，避免重渲染
 
@@ -49,7 +48,6 @@ export function WeatherProvider({ children }) {
         const results = await fetchAllCitiesWeather(CITIES);
         if (!cancelled) {
           cacheRef.current = results;
-          setAllCitiesData(results);
           setIsInitialLoading(false);
         }
       } catch (e) {
@@ -184,12 +182,13 @@ export function WeatherProvider({ children }) {
     setLoading(false);
   }, [currentCity]);
 
-  // 天气背景预加载 - 优化：同时发起多个分辨率请求
+  // 天气背景预加载 - 优化：同时发起多个分辨率请求，带错误处理
   useEffect(() => {
     if (!rawData) return;
     const weatherCode = rawData.current.weather_code;
     const bgUrl = getWeatherBackgroundUrl(weatherCode);
     const bgLabel = getWeatherLabel(weatherCode);
+    const fallbackUrl = getFallbackBackgroundUrl();
 
     // 预加载小图先显示，再加载大图
     const smallUrl = bgUrl.replace('1920/1080', '640/360');
@@ -198,7 +197,12 @@ export function WeatherProvider({ children }) {
     const smallImg = new Image();
     smallImg.src = smallUrl;
     smallImg.onload = () => {
-      setBackgroundImage(smallUrl); // 先显示小图
+      setBackgroundImage(smallUrl);
+      setBackgroundLabel(bgLabel);
+    };
+    smallImg.onerror = () => {
+      // 小图加载失败，使用 fallback
+      setBackgroundImage(fallbackUrl);
       setBackgroundLabel(bgLabel);
     };
 
@@ -206,7 +210,10 @@ export function WeatherProvider({ children }) {
     const largeImg = new Image();
     largeImg.src = bgUrl;
     largeImg.onload = () => {
-      setBackgroundImage(bgUrl); // 替换为大图
+      setBackgroundImage(bgUrl);
+    };
+    largeImg.onerror = () => {
+      // 大图加载失败，保持小图/fallback
     };
   }, [rawData]);
 

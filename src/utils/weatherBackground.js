@@ -50,12 +50,19 @@ export const weatherBackgroundMap = {
  */
 export function getWeatherBackgroundUrl(weatherCode) {
   const weather = weatherBackgroundMap[weatherCode] || weatherBackgroundMap[0];
-  const keyword = weather.keyword;
-
-  // 使用 Unsplash Source API (已弃用，改用 direct image URLs)
-  // 使用 picsum.photos 作为备选
-  const seed = weatherCode * 100 + Date.now();
+  
+  // 使用固定 seed，避免每次刷新 URL 变化
+  // weatherCode * 100 确保不同天气有不同图片
+  const seed = weatherCode * 100 + 2024; // 固定年份作为 salt
   return `https://picsum.photos/seed/${seed}/1920/1080?blur=2`;
+}
+
+/**
+ * 获取备用背景图 URL（用于加载失败时）
+ * @returns {string}
+ */
+export function getFallbackBackgroundUrl() {
+  return 'https://picsum.photos/seed/weather-fallback/1920/1080?blur=2';
 }
 
 /**
